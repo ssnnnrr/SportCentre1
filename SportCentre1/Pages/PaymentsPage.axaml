@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.PaymentsPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">💰 Финансовые операции</TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="AddButton" Content="Добавить платеж" Click="AddButton_Click"/>
+            <Button Name="RefundButton" Classes="danger" Content="Сделать возврат" IsEnabled="False" Click="RefundButton_Click"/>
+        </StackPanel>
+
+        <DataGrid Name="PaymentsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" 
+                  x:DataType="data:Payment" SelectionChanged="PaymentsDataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя клиента" Binding="{Binding Client.Firstname}" Width="*"/>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding Client.Lastname}" Width="*"/>
+                <DataGridTextColumn Header="Сумма" Binding="{Binding Amount, StringFormat={}{0:C}}"/>
+                <DataGridTextColumn Header="Дата платежа" Binding="{Binding Paymentdate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="2*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

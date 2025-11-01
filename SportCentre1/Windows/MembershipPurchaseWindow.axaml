@@ -1,0 +1,38 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:data="clr-namespace:SportCentre1.Data"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+        x:Class="SportCentre1.Windows.MembershipPurchaseWindow"
+        Title="Покупка абонемента"
+        WindowStartupLocation="CenterOwner"
+        Width="700" SizeToContent="Height" CanResize="False">
+    <DockPanel Margin="20">
+        <TextBlock Classes="h2" DockPanel.Dock="Top" Margin="0,0,0,15">🎟️ Выберите абонемент</TextBlock>
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+            <Button Name="ConfirmButton" Content="Подтвердить покупку" Classes="accent" IsEnabled="False" Click="ConfirmButton_Click"/>
+            <Button Content="Отмена" Classes="secondary" IsCancel="True"/>
+        </StackPanel>
+
+
+        <ListBox Name="MembershipsListBox" Background="Transparent" SelectionChanged="MembershipsListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="data:Membershiptype">
+                    <Border Classes="card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Typename}" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Text="{Binding Description}" Classes="Subtle" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="{Binding Price, StringFormat={}{0:C}}" 
+                                       FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Margin="20,0"
+                                       Foreground="{StaticResource PrimaryPurple}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</Window>

@@ -1,0 +1,128 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SportCentre1.App"
+             RequestedThemeVariant="Light">
+
+    <Application.Resources>
+        <Color x:Key="PrimaryPurpleColor">#7B68EE</Color>
+        <Color x:Key="AccentDarkPurpleColor">#6A5ACD</Color>
+        <Color x:Key="BackgroundColor">#F8F7FF</Color>
+        <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+        <Color x:Key="ForegroundColor">#333333</Color>
+        <Color x:Key="BorderColor">#E6E0FF</Color>
+        <Color x:Key="ErrorRedColor">#D32F2F</Color>
+        <Color x:Key="NeutralGrayColor">#757575</Color>
+        <Color x:Key="ShadowColor">rgba(90,90,130,0.1)</Color>
+        
+        <SolidColorBrush x:Key="PrimaryPurple" Color="{StaticResource PrimaryPurpleColor}"/>
+        <SolidColorBrush x:Key="AccentDarkPurple" Color="{StaticResource AccentDarkPurpleColor}"/>
+        <SolidColorBrush x:Key="Background" Color="{StaticResource BackgroundColor}"/>
+        <SolidColorBrush x:Key="CardBackground" Color="{StaticResource CardBackgroundColor}"/>
+        <SolidColorBrush x:Key="Foreground" Color="{StaticResource ForegroundColor}"/>
+        <SolidColorBrush x:Key="Border" Color="{StaticResource BorderColor}"/>
+        <SolidColorBrush x:Key="ErrorRed" Color="{StaticResource ErrorRedColor}"/>
+        <SolidColorBrush x:Key="NeutralGray" Color="{StaticResource NeutralGrayColor}"/>
+        <SolidColorBrush x:Key="LightGray" Color="#CCCCCC"/>
+
+        <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="{StaticResource CardBackgroundColor}" Offset="0.0"/>
+            <GradientStop Color="{StaticResource BackgroundColor}" Offset="1.0"/> 
+        </LinearGradientBrush>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+        <Style Selector="Window, UserControl">
+            <Setter Property="Background" Value="{StaticResource BackgroundGradient}"/>
+            <Setter Property="FontFamily" Value="Segoe UI, Inter, system-ui, sans-serif"/>
+        </Style>
+        
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+        <Style Selector="TextBlock.h2">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="TextBlock.Subtle">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource NeutralGray}"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryPurple}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.1"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentDarkPurple}"/>
+        </Style>
+		<Style Selector="Button.accent">
+            <Setter Property="Background" Value="{StaticResource AccentDarkPurple}"/>
+        </Style>
+        <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource PrimaryPurple}"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryPurple}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#F0F0FF"/>
+        </Style>
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="{StaticResource ErrorRed}"/>
+        </Style>
+        <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#B71C1C"/>
+        </Style>
+        <Style Selector="Button.NavButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+        <Style Selector="Button.NavButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E6E0FF"/>
+        </Style>
+        <Style Selector="Button.NavButton.notification">
+            <Setter Property="Background" Value="{StaticResource AccentDarkPurple}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.NavButton.notification:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource PrimaryPurple}"/>
+        </Style>
+
+        <Style Selector="Button.notification_warning">
+    <Setter Property="Background" Value="#FFA500"/> 
+    <Setter Property="Foreground" Value="White"/>
+</Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+            
+        </Style>
+    </Application.Styles>
+</Application>

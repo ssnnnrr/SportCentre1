@@ -1,0 +1,19 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SportCentre1.Windows.RequestEditWindow"
+        Title="Новый запрос" Width="400" Height="450"
+        WindowStartupLocation="CenterOwner" CanResize="False">
+    <Border Classes="card" Margin="20">
+        <StackPanel Spacing="10">
+            <TextBlock Classes="h2">Новый запрос 📬</TextBlock>
+            <TextBlock>Тема запроса:</TextBlock>
+            <TextBox Name="SubjectTextBox"/>
+            <TextBlock Margin="0,10,0,0">Ваше сообщение:</TextBlock>
+            <TextBox Name="MessageTextBox" Height="150" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0" Spacing="10">
+                <Button Name="SendButton" Classes="accent" Content="Отправить" Click="SendButton_Click"/>
+                <Button Content="Отмена" Classes="secondary" IsCancel="True"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.ClientPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">👥 Клиенты</TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="EditButton" Content="Изменить" IsEnabled="False" Click="EditButton_Click"/>
+            <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
+        </StackPanel>
+        
+        <DataGrid Name="ClientsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" 
+                  x:DataType="data:Client" SelectionChanged="ClientsDataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя" Binding="{Binding Firstname}" Width="*"/>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}" Width="*"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding Phonenumber}" Width="*"/>
+                <DataGridTextColumn Header="Дата регистрации" Binding="{Binding Registrationdate, StringFormat={}{0:dd.MM.yyyy}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

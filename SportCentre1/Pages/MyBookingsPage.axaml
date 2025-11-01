@@ -1,0 +1,67 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.MyBookingsPage">
+    <ScrollViewer>
+        <StackPanel Margin="25" Spacing="20">
+            <TextBlock Classes="h1">📅 Мои записи</TextBlock>
+
+            <!-- Раздел предстоящих записей -->
+            <TextBlock Classes="h2">Предстоящие записи</TextBlock>
+            <ListBox Name="BookingsListBox" Background="Transparent">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="data:Booking">
+                        <Border Classes="card" Margin="0,0,0,10">
+                            <Grid ColumnDefinitions="*,Auto,Auto,Auto" MinWidth="700">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Schedule.Workouttype.Typename}" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Foreground="{StaticResource NeutralGray}">
+                                        <Run Text="Тренер: "/><Run Text="{Binding Schedule.Trainer.Firstname}"/><Run Text=" "/><Run Text="{Binding Schedule.Trainer.Lastname}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Schedule.Starttime, StringFormat='{}{0:dd MMMM yyyy, HH:mm}'}" Classes="Subtle"/>
+                                </StackPanel>
+                                
+                                <!-- Элементы управления оплатой -->
+                                <Button Grid.Column="1" Content="Оплатить" Classes="accent" 
+                                        IsVisible="{Binding Ispaid, Converter={x:Static BoolConverters.Not}}"
+                                        CommandParameter="{Binding}" Click="PayButton_Click" VerticalAlignment="Center" Margin="10,0"/>
+                                        
+                                <Border Grid.Column="1" Background="{StaticResource SuccessGreenColor}" 
+                                        IsVisible="{Binding Ispaid}" 
+                                        Padding="10,6" CornerRadius="4" VerticalAlignment="Center" Margin="10,0">
+                                    <TextBlock Text="Оплачено ✔" Foreground="White" FontWeight="SemiBold"/>
+                                </Border>
+
+                                <!-- Кнопки управления записью -->
+                                <Button Grid.Column="2" Content="Перенести"
+                                        CommandParameter="{Binding}" Click="RescheduleBooking_Click" VerticalAlignment="Center" Margin="10,0"/>
+
+                                <Button Grid.Column="3" Content="Отменить запись" Classes="danger"
+                                        CommandParameter="{Binding}" Click="CancelBooking_Click" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Раздел истории посещений -->
+            <TextBlock Classes="h2" Margin="0,20,0,0">История посещений</TextBlock>
+            <ListBox Name="PastBookingsListBox" Background="Transparent">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="data:Booking">
+                        <Border Classes="card_subtle" Margin="0,0,0,10" Padding="15">
+                            <StackPanel Orientation="Horizontal" Spacing="30">
+                                <TextBlock Text="{Binding Schedule.Starttime, StringFormat='{}{0:dd.MM.yyyy}'}" FontWeight="Bold" MinWidth="100"/>
+                                <TextBlock Text="{Binding Schedule.Workouttype.Typename}" MinWidth="150"/>
+                                <TextBlock Foreground="{StaticResource NeutralGray}">
+                                     <Run Text="Тренер: "/><Run Text="{Binding Schedule.Trainer.Firstname}"/><Run Text=" "/><Run Text="{Binding Schedule.Trainer.Lastname}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

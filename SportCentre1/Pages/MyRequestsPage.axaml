@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.MyRequestsPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">📬 Мои запросы</TextBlock>
+        <Button DockPanel.Dock="Bottom" Content="Создать новый запрос" Classes="accent"
+                HorizontalAlignment="Center" Margin="0,15,0,0" Click="NewRequestButton_Click"/>
+        
+        <ListBox Name="RequestsListBox" Background="Transparent" SelectionChanged="RequestsListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="data:Request">
+                    <Border Classes="card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="*,Auto" MinWidth="600">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Subject}" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Text="{Binding Creationdate, StringFormat='Создан: {0:dd.MM.yyyy HH:mm}'}" Classes="Subtle"/>
+                            </StackPanel>
+                            <Border Grid.Column="1" VerticalAlignment="Center" Background="{StaticResource Border}" CornerRadius="4" Padding="8,4">
+                                <TextBlock Text="{Binding Status}" FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

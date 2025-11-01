@@ -1,0 +1,41 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.ReviewsPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">⭐ Отзывы и оценки</TextBlock>
+
+        <StackPanel Name="BottomPanel" DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="AddButton" Content="Оставить отзыв" Click="AddButton_Click"/>
+            <Button Name="EditButton" Content="Изменить" IsEnabled="False" Click="EditButton_Click"/>
+            <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
+        </StackPanel>
+        
+        <ListBox Name="ReviewsListBox" Background="Transparent" SelectionChanged="ReviewsListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="data:Review">
+                    <Border Classes="card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*" MinWidth="650">
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock FontWeight="Bold">
+                                    <Run Text="Клиент: "/>
+                                    <Run Text="{Binding Client.Firstname}"/> <Run Text="{Binding Client.Lastname}"/>
+                                </TextBlock>
+                                <TextBlock Foreground="{StaticResource NeutralGray}">
+                                    <Run Text="Тренер: "/>
+                                    <Run Text="{Binding Trainer.Firstname}"/> <Run Text="{Binding Trainer.Lastname}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding Rating, StringFormat='Оценка: {0}/5'}" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Text="{Binding Reviewdate, StringFormat={}{0:dd.MM.yyyy}}" Classes="Subtle" HorizontalAlignment="Right"/>
+                            </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Comment}" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,114 @@
+// File: Windows/ScheduleEditWindow.axaml.cs
+using Avalonia.Controls;
+using Microsoft.EntityFrameworkCore;
+using SportCentre1.Data;
+using System;
+using System.Linq;
+
+namespace SportCentre1.Windows
+{
+    public partial class ScheduleEditWindow : Window
+    {
+        private Schedule _currentSchedule;
+        private bool _isNew;
+
+        public ScheduleEditWindow()
+        {
+            InitializeComponent();
+            _isNew = true;
+            _currentSchedule = new Schedule();
+            LoadComboBoxes();
+            StartDatePicker.SelectedDate = DateTime.Today;
+            EndDatePicker.SelectedDate = DateTime.Today;
+        }
+
+        public ScheduleEditWindow(Schedule scheduleToEdit)
+        {
+            InitializeComponent();
+            _isNew = false;
+            _currentSchedule = scheduleToEdit;
+            LoadComboBoxes();
+            LoadScheduleData();
+        }
+
+        private async void LoadComboBoxes()
+        {
+            using (var dbContext = new AppDbContext())
+            {
+                WorkoutTypeComboBox.ItemsSource = await dbContext.Workouttypes.ToListAsync();
+                TrainerComboBox.ItemsSource = await dbContext.Trainers.ToListAsync();
+            }
+        }
+
+        private void LoadScheduleData()
+        {
+            WorkoutTypeComboBox.SelectedItem = (WorkoutTypeComboBox.ItemsSource as System.Collections.IEnumerable)?
+                .OfType<Workouttype>().FirstOrDefault(w => w.Workouttypeid == _currentSchedule.Workouttypeid);
+
+            TrainerComboBox.SelectedItem = (TrainerComboBox.ItemsSource as System.Collections.IEnumerable)?
+                .OfType<Trainer>().FirstOrDefault(t => t.Trainerid == _currentSchedule.Trainerid);
+
+            StartDatePicker.SelectedDate = _currentSchedule.Starttime.Date;
+            StartTimePicker.SelectedTime = _currentSchedule.Starttime.TimeOfDay;
+
+            EndDatePicker.SelectedDate = _currentSchedule.Endtime.Date;
+            EndTimePicker.SelectedTime = _currentSchedule.Endtime.TimeOfDay;
+
+            MaxCapacityUpDown.Value = _currentSchedule.Maxcapacity;
+        }
+
+        private async void SaveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (!StartDatePicker.SelectedDate.HasValue || !StartTimePicker.SelectedTime.HasValue ||
+                !EndDatePicker.SelectedDate.HasValue || !EndTimePicker.SelectedTime.HasValue)
+            {
+                var dialog = new ConfirmationDialog("Необходимо указать полную дату и время.", true);
+                await dialog.ShowDialog<bool>(this); return;
+            }
+
+            var startTime = StartDatePicker.SelectedDate.Value.Date + StartTimePicker.SelectedTime.Value;
+            var endTime = EndDatePicker.SelectedDate.Value.Date + EndTimePicker.SelectedTime.Value;
+
+            if (WorkoutTypeComboBox.SelectedItem == null || TrainerComboBox.SelectedItem == null)
+            {
+                var dialog = new ConfirmationDialog("Нужно выбрать тип тренировки и тренера.", true);
+                await dialog.ShowDialog<bool>(this); return;
+            }
+            if (endTime <= startTime)
+            {
+                var dialog = new ConfirmationDialog("Время окончания должно быть позже времени начала.", true);
+                await dialog.ShowDialog<bool>(this); return;
+            }
+            if (_isNew && startTime < DateTime.Now)
+            {
+                var dialog = new ConfirmationDialog("Нельзя создавать занятие в прошлом.", true);
+                await dialog.ShowDialog<bool>(this); return;
+            }
+            if ((endTime - startTime).TotalHours > 3)
+            {
+                var dialog = new ConfirmationDialog("Тренировка не может длиться более 3 часов.", true);
+                await dialog.ShowDialog<bool>(this); return;
+            }
+
+            _currentSchedule.Workouttypeid = (WorkoutTypeComboBox.SelectedItem as Workouttype)!.Workouttypeid;
+            _currentSchedule.Trainerid = (TrainerComboBox.SelectedItem as Trainer)!.Trainerid;
+            _currentSchedule.Starttime = startTime;
+            _currentSchedule.Endtime = endTime;
+            _currentSchedule.Maxcapacity = (int)(MaxCapacityUpDown.Value ?? 1);
+
+            using (var dbContext = new AppDbContext())
+            {
+                if (_isNew)
+                {
+                    dbContext.Schedules.Add(_currentSchedule);
+                }
+                else
+                {
+                    dbContext.Schedules.Update(_currentSchedule);
+                }
+                await dbContext.SaveChangesAsync();
+            }
+            Close(true);
+        }
+    }
+}

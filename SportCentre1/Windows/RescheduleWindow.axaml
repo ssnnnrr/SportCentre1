@@ -1,0 +1,43 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:data="clr-namespace:SportCentre1.Data"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SportCentre1.Windows.RescheduleWindow"
+        Title="Перенос занятия"
+        Width="600" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" CanResize="False">
+    <DockPanel Margin="20">
+        <TextBlock Name="TitleTextBlock" Classes="h2" DockPanel.Dock="Top" Margin="0,0,0,15">Выберите новое время</TextBlock>
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+            <Button Name="ConfirmButton" Content="Подтвердить перенос" Classes="accent" IsEnabled="False" Click="ConfirmButton_Click"/>
+            <Button Content="Отмена" Classes="secondary" IsCancel="True"/>
+        </StackPanel>
+
+        <ListBox Name="AvailableSlotsListBox" Background="Transparent" SelectionChanged="AvailableSlotsListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="data:Schedule">
+                    <Border Classes="card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock>
+                                    <Run Text="{Binding Starttime, StringFormat='{}{0:dd MMMM yyyy, HH:mm}'}"/>
+                                    <Run Text=" - "/>
+                                    <Run Text="{Binding Endtime, StringFormat='{}{0:HH:mm}'}"/>
+                                </TextBlock>
+                                <TextBlock Foreground="{StaticResource NeutralGray}">
+                                    <Run Text="Тренер: "/><Run Text="{Binding Trainer.Firstname}"/><Run Text=" "/><Run Text="{Binding Trainer.Lastname}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                <Run Text="Свободно: "/><Run Text="{Binding Maxcapacity}"/><Run Text=" / "/><Run Text="{Binding Currentenrollment}"/>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</Window>

@@ -1,0 +1,28 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SportCentre1.Windows.RegistrationWindow"
+        Title="Регистрация нового клиента"
+        Width="400" Height="600"
+        WindowStartupLocation="CenterScreen" CanResize="False">
+    <Border Classes="card" Margin="20">
+        <StackPanel Spacing="10">
+            <TextBlock Classes="h1" HorizontalAlignment="Center">Регистрация 📝</TextBlock>
+            <TextBlock>Имя:</TextBlock>
+            <TextBox Name="FirstNameTextBox"/>
+            <TextBlock Margin="0,5,0,0">Фамилия:</TextBlock>
+            <TextBox Name="LastNameTextBox"/>
+            
+            <TextBlock Margin="0,5,0,0">Телефон:</TextBlock>
+            <TextBox Name="PhoneTextBox"/>
+            <TextBlock Margin="0,5,0,0">Email:</TextBlock>
+            <TextBox Name="EmailTextBox"/>
+            <TextBlock Margin="0,10,0,0">Пароль:</TextBlock>
+            <TextBox Name="PasswordTextBox" PasswordChar="*"/>
+            <TextBlock Name="ErrorTextBlock" Foreground="{StaticResource ErrorRed}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <Button Name="RegisterButton" Classes="accent" Content="Зарегистрироваться" Click="RegisterButton_Click"/>
+                <Button Name="CancelButton" Content="Отмена" Classes="secondary" IsCancel="True"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

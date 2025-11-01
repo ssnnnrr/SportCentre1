@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SportCentre1.Pages.AnalyticsPage">
+    <ScrollViewer>
+        <StackPanel Margin="25" Spacing="20">
+            <TextBlock Classes="h1">📊 Аналитика и отчеты</TextBlock>
+
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                <Border Grid.Column="0" Classes="card" Margin="0,0,10,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Classes="Subtle" FontWeight="Bold">ОБЩИЙ ДОХОД</TextBlock>
+                        <TextBlock Name="TotalRevenueTextBlock" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource PrimaryPurple}">-</TextBlock>
+                    </StackPanel>
+                </Border>
+                
+                <Border Grid.Column="1" Classes="card" Margin="10,0,10,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Classes="Subtle" FontWeight="Bold">ВСЕГО КЛИЕНТОВ</TextBlock>
+                        <TextBlock Name="TotalClientsTextBlock" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource PrimaryPurple}">-</TextBlock>
+                    </StackPanel>
+                </Border>
+                
+                <Border Grid.Column="2" Classes="card" Margin="10,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Classes="Subtle" FontWeight="Bold">ПРЕДСТОЯЩИХ ЗАПИСЕЙ</TextBlock>
+                        <TextBlock Name="ActiveBookingsTextBlock" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource PrimaryPurple}">-</TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" Margin="0,20,0,0">
+                <Border Grid.Column="0" Classes="card" Margin="0,0,10,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Classes="h2">Топ-5 самых активных тренеров</TextBlock>
+                        <DataGrid Name="TopTrainersDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Тренер" Binding="{Binding TrainerName}" Width="*"/>
+                                <DataGridTextColumn Header="Тренировок" Binding="{Binding WorkoutCount}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+                
+                <Border Grid.Column="1" Classes="card" Margin="10,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Classes="h2">Топ-5 клиентов по расходам</TextBlock>
+                        <DataGrid Name="TopClientsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="*"/>
+                                <DataGridTextColumn Header="Сумма" Binding="{Binding TotalSpent, StringFormat={}{0:C}}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

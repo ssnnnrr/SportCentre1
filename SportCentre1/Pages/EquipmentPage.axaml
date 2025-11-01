@@ -1,0 +1,32 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:SportCentre1.Models"
+             x:Class="SportCentre1.Pages.EquipmentPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">⚙️ Оборудование и инвентарь</TextBlock>
+
+        <StackPanel Name="BottomPanel" DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="AddButton" Content="Добавить" Click="AddButton_Click"/>
+            <Button Name="EditButton" Content="Изменить" IsEnabled="False" Click="EditButton_Click"/>
+            <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
+        </StackPanel>
+        
+        <DataGrid Name="EquipmentDataGrid" IsReadOnly="True" AutoGenerateColumns="False" 
+                  x:DataType="models:EquipmentViewModel" SelectionChanged="EquipmentDataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Название" Width="2*">
+                    <DataTemplate>
+                        <Border Background="{Binding RowColor}" CornerRadius="3" Padding="5,3">
+                           <TextBlock Text="{Binding Name}"/>
+                        </Border>
+                    </DataTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Последнее ТО" Binding="{Binding Lastmaintenancedate, StringFormat={}{0:dd.MM.yyyy}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

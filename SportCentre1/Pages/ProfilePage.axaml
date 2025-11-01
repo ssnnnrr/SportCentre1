@@ -1,0 +1,35 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SportCentre1.Pages.ProfilePage">
+    <StackPanel Margin="25" Spacing="15">
+        <TextBlock Classes="h1">👤 Мой профиль</TextBlock>
+
+        <Border Classes="card">
+            <StackPanel Spacing="10">
+                <TextBlock Classes="h2">Личные данные</TextBlock>
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" >
+                    <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Имя:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Name="FirstNameTextBlock">-</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Фамилия:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Name="LastNameTextBlock">-</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Email:</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Name="EmailTextBlock">-</TextBlock>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Classes="card">
+            <StackPanel Spacing="10">
+                <TextBlock Classes="h2">Смена пароля</TextBlock>
+                <TextBlock>Текущий пароль:</TextBlock>
+                <TextBox Name="CurrentPasswordTextBox" PasswordChar="*"/>
+                <TextBlock Margin="0,5,0,0">Новый пароль:</TextBlock>
+                <TextBox Name="NewPasswordTextBox" PasswordChar="*"/>
+                <TextBlock Margin="0,5,0,0">Подтвердите новый пароль:</TextBlock>
+                <TextBox Name="ConfirmPasswordTextBox" PasswordChar="*"/>
+                <TextBlock Name="StatusTextBlock" Margin="0,10,0,0"/>
+                <Button Name="ChangePasswordButton" Content="Изменить пароль" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ChangePasswordButton_Click"/>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

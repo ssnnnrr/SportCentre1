@@ -1,0 +1,33 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SportCentre1.Windows"
+        x:Class="SportCentre1.Windows.RequestThreadWindow"
+        Title="Переписка по запросу" Width="600" Height="500"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="15">
+        <TextBlock Name="SubjectTitle" Classes="h2" DockPanel.Dock="Top"/>
+        <StackPanel DockPanel.Dock="Bottom" Spacing="10" Margin="0,15,0,0">
+            <TextBox Name="ReplyTextBox" Height="100" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Введите ваш ответ..."/>
+            <Button Name="ReplyButton" Content="Ответить" HorizontalAlignment="Right" Click="ReplyButton_Click"/>
+        </StackPanel>
+        
+        <ScrollViewer Name="MessagesScrollViewer">
+            <ItemsControl Name="MessagesItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="local:MessageViewModel">
+                        <Border Padding="10" Margin="5,10" CornerRadius="8" MaxWidth="350" HorizontalAlignment="{Binding HorizontalAlignment}">
+                            <Border.Background>
+                                <SolidColorBrush Color="{Binding BackgroundColor}"/>
+                            </Border.Background>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Senderuser.Email}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Messagetext}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Sentdate, StringFormat='{}{0:HH:mm dd.MM.yy}'}" FontSize="10" Foreground="{StaticResource NeutralGray}" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

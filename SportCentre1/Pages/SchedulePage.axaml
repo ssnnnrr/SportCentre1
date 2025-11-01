@@ -1,0 +1,40 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:SportCentre1.Models"
+             x:Class="SportCentre1.Pages.SchedulePage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">🤸‍♂️ Расписание занятий</TextBlock>
+
+        <StackPanel Name="BottomPanel" DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="AddButton" Content="Добавить занятие" Click="AddButton_Click"/>
+            <Button Name="EditButton" Content="Изменить" IsEnabled="False" Click="EditButton_Click"/>
+            <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
+        </StackPanel>
+        
+        <ListBox Name="ScheduleListBox" Background="Transparent" SelectionChanged="ScheduleListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="models:ScheduleInfo">
+                    <Border Classes="card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="*, Auto, Auto" MinWidth="600">
+                            <StackPanel>
+                                <TextBlock Text="{Binding WorkoutName}" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Text="{Binding TrainerName}" Foreground="{StaticResource NeutralGray}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="20,0">
+                                <TextBlock Text="{Binding StartTime, StringFormat='HH:mm'}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource PrimaryPurple}"/>
+                                <TextBlock Text="{Binding EndTime, StringFormat='- HH:mm'}" FontSize="14" HorizontalAlignment="Center" Foreground="Gray"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center">
+                                <TextBlock Text="Записано" Classes="Subtle" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding EnrollmentInfo}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>
