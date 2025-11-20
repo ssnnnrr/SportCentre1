@@ -1,8 +1,9 @@
-// File: Windows/ScheduleEditWindow.axaml.cs
 using Avalonia.Controls;
 using Microsoft.EntityFrameworkCore;
 using SportCentre1.Data;
+using SportCentre1.Windows;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SportCentre1.Windows
@@ -59,6 +60,7 @@ namespace SportCentre1.Windows
 
         private async void SaveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            // --- Шаг 1: Валидация введенных данных (без изменений) ---
             if (!StartDatePicker.SelectedDate.HasValue || !StartTimePicker.SelectedTime.HasValue ||
                 !EndDatePicker.SelectedDate.HasValue || !EndTimePicker.SelectedTime.HasValue)
             {
@@ -90,14 +92,54 @@ namespace SportCentre1.Windows
                 await dialog.ShowDialog<bool>(this); return;
             }
 
+            // --- Шаг 2: Присваиваем данные объекту ---
+            var selectedTrainer = (TrainerComboBox.SelectedItem as Trainer)!;
             _currentSchedule.Workouttypeid = (WorkoutTypeComboBox.SelectedItem as Workouttype)!.Workouttypeid;
-            _currentSchedule.Trainerid = (TrainerComboBox.SelectedItem as Trainer)!.Trainerid;
+            _currentSchedule.Trainerid = selectedTrainer.Trainerid;
             _currentSchedule.Starttime = startTime;
             _currentSchedule.Endtime = endTime;
             _currentSchedule.Maxcapacity = (int)(MaxCapacityUpDown.Value ?? 1);
 
+
             using (var dbContext = new AppDbContext())
             {
+                // ======================================================================
+                // НОВЫЙ БЛОК: ПРОВЕРКА НА ПЕРЕСЕЧЕНИЕ ЗАНЯТИЙ У ТРЕНЕРА
+                // ======================================================================
+
+                // Создаем базовый запрос для поиска пересечений
+                IQueryable<Schedule> overlapQuery = dbContext.Schedules
+                    .Where(s =>
+                        s.Trainerid == selectedTrainer.Trainerid && // У того же тренера
+                        s.Starttime < endTime &&                  // Которое начинается до окончания нашего нового занятия
+                        s.Endtime > startTime);                    // И заканчивается после начала нашего нового занятия
+
+                // Если мы редактируем существующее занятие,
+                // его нужно исключить из проверки, иначе оно найдет пересечение само с собой.
+                if (!_isNew)
+                {
+                    overlapQuery = overlapQuery.Where(s => s.Scheduleid != _currentSchedule.Scheduleid);
+                }
+
+                // Выполняем запрос
+                bool isOverlapping = await overlapQuery.AnyAsync();
+
+                if (isOverlapping)
+                {
+                    // Если найдено хотя бы одно пересечение, показываем ошибку и прекращаем сохранение
+                    var dialog = new ConfirmationDialog(
+                        $"Ошибка! Тренер {selectedTrainer.Firstname} {selectedTrainer.Lastname} уже занят в указанное время. Пожалуйста, выберите другое время или другого тренера.",
+                        true);
+                    await dialog.ShowDialog<bool>(this);
+                    return; // ВАЖНО: выходим из метода, не сохраняя данные
+                }
+
+                // ======================================================================
+                // КОНЕЦ НОВОГО БЛОКА
+                // ======================================================================
+
+
+                // --- Шаг 3: Сохраняем данные, если проверка пройдена ---
                 if (_isNew)
                 {
                     dbContext.Schedules.Add(_currentSchedule);

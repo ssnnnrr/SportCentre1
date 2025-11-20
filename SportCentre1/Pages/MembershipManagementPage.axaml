@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SportCentre1.Pages.MembershipManagementPage">
+    <ScrollViewer>
+        <StackPanel Margin="25" Spacing="20">
+            <TextBlock Classes="h1">💳 Управление абонементом</TextBlock>
+
+            <!-- Блок с информацией о текущем абонементе -->
+            <Border Name="CurrentMembershipCard" Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2">Текущий абонемент</TextBlock>
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Тип:</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Name="MembershipTypeTextBlock">-</TextBlock>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Действует до:</TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Name="EndDateTextBlock">-</TextBlock>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Margin="0,0,15,0">Статус:</TextBlock>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Name="StatusTextBlock" Foreground="Green">-</TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Name="NoMembershipMessage" Classes="h2" IsVisible="False">
+                У вас нет активного абонемента для управления.
+            </TextBlock>
+
+            <!-- Блок заморозки -->
+            <Border Name="FreezeCard" Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="h2">Заморозка абонемента ❄️</TextBlock>
+                    <TextBlock TextWrapping="Wrap" Classes="Subtle">
+                        Вы можете приостановить действие вашего абонемента. Дата его окончания будет перенесена на выбранный вами срок.
+                    </TextBlock>
+                    
+                    <TextBlock Margin="0,10,0,0">Дата начала заморозки:</TextBlock>
+                    <DatePicker Name="FreezeStartDatePicker"/>
+                    
+                    <TextBlock Margin="0,10,0,0">Дата окончания заморозки:</TextBlock>
+                    <DatePicker Name="FreezeEndDatePicker"/>
+                    
+                    <TextBlock Name="FreezeInfoTextBlock" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                    
+                    <Button Name="FreezeButton" Content="Заморозить" HorizontalAlignment="Left" Margin="0,10,0,0" Click="FreezeButton_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Блок возврата средств -->
+            <Border Name="RefundCard" Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="h2">Отмена абонемента и возврат средств</TextBlock>
+                    <TextBlock TextWrapping="Wrap" Classes="Subtle">
+                        Вы можете досрочно прекратить действие абонемента. Сумма к возврату будет рассчитана как стоимость абонемента за вычетом стоимости всех посещенных занятий по цене разового визита.
+                    </TextBlock>
+                    
+                    <TextBlock Name="RefundInfoTextBlock" FontWeight="SemiBold" Margin="0,15,0,0"/>
+                    
+                    <Button Name="CalculateRefundButton" Content="Рассчитать сумму к возврату" Classes="secondary" HorizontalAlignment="Left" Click="CalculateRefundButton_Click"/>
+                    
+                    <Button Name="ConfirmRefundButton" Content="Подтвердить и отправить запрос на возврат" Classes="danger" IsVisible="False" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ConfirmRefundButton_Click"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

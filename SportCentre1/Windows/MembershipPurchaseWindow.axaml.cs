@@ -49,8 +49,8 @@ namespace SportCentre1.Windows
 
                 // --- ÍÎÂÀß ËÎÃÈÊÀ ÏÐÎÂÅÐÊÈ ---
                 // Ïðîâåðÿåì, åñòü ëè ó êëèåíòà óæå àêòèâíûé àáîíåìåíò.
-                bool hasActiveMembership = await dbContext.ClientMemberships
-                    .AnyAsync(cm => cm.Clientid == clientProfile.Clientid && cm.EndDate >= DateOnly.FromDateTime(DateTime.Now));
+                bool hasActiveMembership = await dbContext.Clientmemberships
+                    .AnyAsync(cm => cm.Clientid == clientProfile.Clientid && cm.Enddate >= DateOnly.FromDateTime(DateTime.Now));
 
                 if (hasActiveMembership)
                 {
@@ -73,14 +73,14 @@ namespace SportCentre1.Windows
                 };
                 dbContext.Payments.Add(newPayment);
 
-                var newClientMembership = new ClientMembership
+                var newClientMembership = new Clientmembership
                 {
                     Clientid = clientProfile.Clientid,
                     Membershiptypeid = selectedMembership.Membershiptypeid,
-                    StartDate = DateOnly.FromDateTime(DateTime.Now),
-                    EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(selectedMembership.Durationdays))
+                    Startdate = DateOnly.FromDateTime(DateTime.Now),
+                    Enddate = DateOnly.FromDateTime(DateTime.Now.AddDays(selectedMembership.Durationdays))
                 };
-                dbContext.ClientMemberships.Add(newClientMembership);
+                dbContext.Clientmemberships.Add(newClientMembership);
 
                 await dbContext.SaveChangesAsync();
             }

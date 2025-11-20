@@ -49,7 +49,7 @@ namespace SportCentre1.Pages
 
                 var topClients = await dbContext.Payments
                     .Include(p => p.Client).Where(p => p.Client != null).GroupBy(p => p.Client)
-                    .Select(g => new ClientStats { ClientName = g.Key.Firstname + " " + g.Key.Lastname, TotalSpent = g.Sum(p => p.Amount) })
+                    .Select(g => new ClientStats { ClientName = g.Key.Firstname + " " + g.Key.Lastname, TotalSpent = (decimal)g.Sum(p => p.Amount) })
                     .OrderByDescending(c => c.TotalSpent).Take(5).ToListAsync();
                 TopClientsDataGrid.ItemsSource = topClients;
             }

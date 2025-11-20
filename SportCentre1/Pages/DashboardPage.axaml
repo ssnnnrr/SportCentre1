@@ -1,0 +1,83 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SportCentre1.Pages.DashboardPage">
+    <ScrollViewer>
+        <StackPanel Margin="25" Spacing="20">
+            <TextBlock Name="WelcomeTextBlock" Classes="h1">Добро пожаловать!</TextBlock>
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="h2">Мой абонемент 🎟️</TextBlock>
+                    <TextBlock Name="MembershipStatusTextBlock" FontSize="16">Загрузка...</TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Classes="card">
+                <Grid ColumnDefinitions="280,*" RowDefinitions="Auto">
+                    <StackPanel Grid.Column="0" Spacing="10" Margin="0,0,20,0">
+                        <TextBlock Classes="h2">Мои цели 🎯</TextBlock>
+                        
+                        <!-- ПОЛЕ РОСТА ОТСЮДА УДАЛЕНО -->
+
+                        <TextBlock Margin="0,8,0,0">Целевой вес (кг):</TextBlock>
+                        <NumericUpDown Name="TargetWeightUpDown" Minimum="30" Increment="0.5" FormatString="N1"/>
+
+                        <TextBlock Margin="0,8,0,0">Целевой % жира:</TextBlock>
+                        <NumericUpDown Name="TargetBodyFatUpDown" Minimum="3" Increment="0.5" FormatString="N1"/>
+
+                        <Button Name="SaveGoalsButton" Content="Сохранить цели" HorizontalAlignment="Stretch" Margin="0,15,0,0" Click="SaveGoalsButton_Click"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="1" Spacing="12">
+                        <TextBlock Classes="h2">Аналитика и Советы</TextBlock>
+                        <Border BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="4" Padding="15">
+                            <StackPanel>
+                                <TextBlock Text="Ваш Индекс Массы Тела (ИМТ):" FontWeight="Bold"/>
+                                <TextBlock Name="BmiValueTextBlock" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PrimaryPurple}">-</TextBlock>
+                                <TextBlock Name="BmiInterpretationTextBlock" FontSize="14" FontWeight="SemiBold" >-</TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="4" Padding="15">
+                            <StackPanel>
+                                <TextBlock Text="Рекомендации для достижения цели:" FontWeight="Bold"/>
+                                <TextBlock Name="RecommendationTextBlock" TextWrapping="Wrap" Margin="0,5,0,0">
+                                    Введите ваш рост и вес, чтобы получить рекомендации.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="*, 1.5*" RowDefinitions="Auto" Margin="0,20,0,0">
+                <Border Grid.Column="0" Classes="card" Margin="0,0,10,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Classes="h2">Добавить запись</TextBlock>
+                        <TextBlock>Дата:</TextBlock>
+                        <DatePicker Name="DateDatePicker"/>
+                        
+                        <!-- ПОЛЕ РОСТА ПЕРЕМЕЩЕНО СЮДА -->
+                        <TextBlock Margin="0,5,0,0">Рост (см):</TextBlock>
+                        <NumericUpDown Name="HeightUpDown" Minimum="100" Maximum="250"/>
+                        
+                        <TextBlock Margin="0,5,0,0">Вес (кг):</TextBlock>
+                        <NumericUpDown Name="WeightUpDown" Minimum="0" Increment="0.1" FormatString="N1"/>
+                        <TextBox Name="NotesTextBox" Height="80" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Заметки..."/>
+                        <Button Name="AddProgressButton" Content="Сохранить запись" HorizontalAlignment="Stretch" Margin="0,10,0,0" Click="AddProgressButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Classes="card" Margin="10,0,0,0">
+                    <DockPanel>
+                        <TextBlock Classes="h2" DockPanel.Dock="Top">История прогресса</TextBlock>
+                        <DataGrid Name="ProgressDataGrid" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,10,0,0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="*"/>
+                                <DataGridTextColumn Header="Рост" Binding="{Binding Client.Height}" /> <!-- Отображаем рост из связанной таблицы -->
+                                <DataGridTextColumn Header="Вес" Binding="{Binding Weight}" />
+                                <DataGridTextColumn Header="Заметки" Binding="{Binding Notes}" Width="2*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

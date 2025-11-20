@@ -1,0 +1,69 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SportCentre1.Pages"
+             x:Class="SportCentre1.Pages.ChallengesPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">🏆 Клубные челленджи</TextBlock>
+
+        <!-- УБРАН ОБРАБОТЧИК SelectionChanged ОТСЮДА -->
+        <ListBox Name="ChallengesListBox" Background="Transparent">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:ChallengeViewModel">
+                    <!-- УБРАН Cursor="Hand" -->
+                    <Border Classes="card" Margin="0,0,0,15">
+                        <Grid ColumnDefinitions="*,220" RowDefinitions="Auto,*,Auto,Auto">
+                            <!-- Заголовок и описание -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,10">
+                                <TextBlock Text="{Binding Title}" Classes="h2"/>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Classes="Subtle"/>
+                            </StackPanel>
+                            
+                            <!-- Сроки и награда -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5" Margin="0,0,0,10">
+                                <TextBlock>
+                                    <Run Text="Сроки проведения: " FontWeight="Bold"/>
+                                    <Run Text="{Binding Dates}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Награда: " FontWeight="Bold"/>
+                                    <Run Text="{Binding Reward}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- =============================================================== -->
+                            <!-- НОВАЯ КНОПКА ДЛЯ ПРОСМОТРА ЛИДЕРБОРДА -->
+                            <!-- =============================================================== -->
+                            <Button Grid.Row="2" Grid.Column="0"
+                                    Content="Посмотреть таблицу лидеров 📈"
+                                    Classes="secondary"
+                                    HorizontalAlignment="Left"
+                                    CommandParameter="{Binding ChallengeId}"
+                                    Click="LeaderboardButton_Click"/>
+                            <!-- =============================================================== -->
+                            
+                            <!-- Правая колонка: Прогресс и управление (без изменений) -->
+                            <Border Grid.Row="0" Grid.RowSpan="4" Grid.Column="1" Padding="15"
+                                    Background="{StaticResource Border}" CornerRadius="6">
+                                <StackPanel Spacing="10" VerticalAlignment="Center">
+                                    <TextBlock Text="Ваш прогресс:" HorizontalAlignment="Center" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding UserProgress}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                    
+                                    <Button Name="JoinButton" Content="Присоединиться!"
+                                            IsVisible="{Binding CanJoin}"
+                                            CommandParameter="{Binding ChallengeId}"
+                                            Click="JoinButton_Click"/>
+                                            
+                                    <Border Background="Green" Padding="10,6" CornerRadius="4"
+                                            IsVisible="{Binding IsJoined}">
+                                        <TextBlock Text="Вы участвуете ✔" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

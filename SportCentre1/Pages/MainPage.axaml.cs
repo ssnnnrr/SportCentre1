@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Microsoft.EntityFrameworkCore;
+using SportCentre1.Data;
 using SportCentre1.Windows;
 using System.Threading.Tasks;
 
@@ -18,31 +20,37 @@ namespace SportCentre1.Pages
             var userRole = MainWindow.CurrentUser?.Role?.Rolename;
             if (userRole == "Администратор" || userRole == "Менеджер")
             {
-                bool hasNewRequests = await MainWindow.dbContext.Requests.AnyAsync(r => r.Status == "Открыт");
-                if (hasNewRequests)
+                using (var db = new AppDbContext())
                 {
-                    RequestsButton.Classes.Add("notification");
-                }
-                else
-                {
-                    RequestsButton.Classes.Remove("notification");
+                    bool hasNewRequests = await db.Requests.AnyAsync(r => r.Status == "Открыт");
+                    if (hasNewRequests)
+                    {
+                        RequestsButton.Classes.Add("notification");
+                    }
+                    else
+                    {
+                        RequestsButton.Classes.Remove("notification");
+                    }
                 }
             }
         }
 
         public async Task CheckEquipmentMaintenanceAsync()
         {
-            bool maintenanceIsDue = await MainWindow.dbContext.Equipment
-                .AnyAsync(e => e.Lastmaintenancedate.HasValue &&
-                               e.Lastmaintenancedate.Value.ToDateTime(System.TimeOnly.MinValue) < System.DateTime.Now.AddDays(-180));
+            using (var db = new AppDbContext())
+            {
+                bool maintenanceIsDue = await db.Equipment
+                   .AnyAsync(e => e.Lastmaintenancedate.HasValue &&
+                                  e.Lastmaintenancedate.Value.ToDateTime(System.TimeOnly.MinValue) < System.DateTime.Now.AddDays(-180));
 
-            if (maintenanceIsDue)
-            {
-                EquipmentButton.Classes.Add("notification_warning");
-            }
-            else
-            {
-                EquipmentButton.Classes.Remove("notification_warning");
+                if (maintenanceIsDue)
+                {
+                    EquipmentButton.Classes.Add("notification_warning");
+                }
+                else
+                {
+                    EquipmentButton.Classes.Remove("notification_warning");
+                }
             }
         }
 
@@ -57,8 +65,10 @@ namespace SportCentre1.Pages
 
             var userRole = user.Role.Rolename;
 
+            // Сначала скроем все кнопки, а потом будем включать нужные
             SetAllButtonsVisibility(false);
 
+            // Кнопки, видимые почти для всех
             ProfileButton.IsVisible = true;
             ScheduleButton.IsVisible = true;
             ReviewsButton.IsVisible = true;
@@ -71,19 +81,27 @@ namespace SportCentre1.Pages
                     PaymentsButton.IsVisible = true;
                     RequestsButton.IsVisible = true;
                     AnalyticsButton.IsVisible = true;
+                    ManageChallengesButton.IsVisible = true; // <-- ПОКАЗАТЬ КНОПКУ
                     break;
+
                 case "Менеджер":
                     ClientsButton.IsVisible = true;
                     PaymentsButton.IsVisible = true;
                     RequestsButton.IsVisible = true;
                     AnalyticsButton.IsVisible = true;
+                    ManageChallengesButton.IsVisible = true; // <-- ПОКАЗАТЬ КНОПКУ
                     break;
+
                 case "Тренер":
                     EquipmentButton.IsVisible = true;
                     break;
+
                 case "Пользователь":
+                    DashboardButton.IsVisible = true;
                     MyBookingsButton.IsVisible = true;
                     RequestsButton.IsVisible = true;
+                    MembershipButton.IsVisible = true;   // <-- ПОКАЗАТЬ КНОПКУ
+                    ChallengesButton.IsVisible = true;   // <-- ПОКАЗАТЬ КНОПКУ
                     break;
             }
 
@@ -100,6 +118,7 @@ namespace SportCentre1.Pages
 
         private void SetAllButtonsVisibility(bool isVisible)
         {
+            DashboardButton.IsVisible = isVisible;
             ProfileButton.IsVisible = isVisible;
             MyBookingsButton.IsVisible = isVisible;
             ClientsButton.IsVisible = isVisible;
@@ -109,13 +128,32 @@ namespace SportCentre1.Pages
             ReviewsButton.IsVisible = isVisible;
             RequestsButton.IsVisible = isVisible;
             AnalyticsButton.IsVisible = isVisible;
+            // Добавляем новые кнопки в список
+            MembershipButton.IsVisible = isVisible;
+            ChallengesButton.IsVisible = isVisible;
+            ManageChallengesButton.IsVisible = isVisible;
         }
 
         private void OpenDefaultPage()
         {
-            if (ProfileButton.IsVisible) { MainContentControl.Content = new ProfilePage(); return; }
+            var userRole = MainWindow.CurrentUser?.Role?.Rolename;
+            // Для клиента стартовой страницей теперь будет Дашборд
+            if (userRole == "Пользователь")
+            {
+                MainContentControl.Content = new DashboardPage();
+                return;
+            }
+            // Для остальных - Профиль
+            if (ProfileButton.IsVisible)
+            {
+                MainContentControl.Content = new ProfilePage();
+                return;
+            }
         }
 
+        // --- Обработчики нажатий ---
+
+        private void DashboardButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new DashboardPage();
         private void ProfileButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new ProfilePage();
         private void MyBookingsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new MyBookingsPage();
         private void ClientsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new ClientPage();
@@ -124,6 +162,11 @@ namespace SportCentre1.Pages
         private void PaymentsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new PaymentsPage();
         private void ReviewsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new ReviewsPage();
         private void AnalyticsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new AnalyticsPage();
+
+        // НОВЫЕ ОБРАБОТЧИКИ
+        private void MembershipButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new MembershipManagementPage();
+        private void ChallengesButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new ChallengesPage();
+        private void ManageChallengesButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e) => MainContentControl.Content = new AdminChallengesPage();
 
         private void RequestsButton_Click(object? s, Avalonia.Interactivity.RoutedEventArgs e)
         {
@@ -134,7 +177,7 @@ namespace SportCentre1.Pages
 
         private void LogoutButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (this.VisualRoot is MainWindow mainWindow) { mainWindow.Logout(); }
+            if (this.GetVisualRoot() is MainWindow mainWindow) { mainWindow.Logout(); }
         }
     }
 }

@@ -7,7 +7,7 @@
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
                     HorizontalAlignment="Center" Margin="0,15,0,0">
-            <Button Name="EditButton" Content="Изменить" IsEnabled="False" Click="EditButton_Click"/>
+        
             <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
         </StackPanel>
         

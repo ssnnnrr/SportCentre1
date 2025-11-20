@@ -8,15 +8,28 @@
                 
                 <StackPanel Margin="5" Spacing="8">
                     <TextBlock FontSize="20" FontWeight="Bold" Margin="10">Навигация 🧭</TextBlock>
+                    
+                    <!-- Кнопки для всех -->
+                    <Button Name="DashboardButton" Classes="NavButton" Content="Дашборд 🏠" Click="DashboardButton_Click"/>
                     <Button Name="ProfileButton" Classes="NavButton" Content="Профиль 👤" Click="ProfileButton_Click"/>
-                    <Button Name="MyBookingsButton" Classes="NavButton" Content="Мои записи 📅" Click="MyBookingsButton_Click"/>
-                    <Button Name="ClientsButton" Classes="NavButton" Content="Клиенты 👥" Click="ClientsButton_Click"/>
                     <Button Name="ScheduleButton" Classes="NavButton" Content="Расписание 🏋️‍♀️" Click="ScheduleButton_Click"/>
+                    <Button Name="ReviewsButton" Classes="NavButton" Content="Отзывы ⭐" Click="ReviewsButton_Click"/>
+                    
+                    <!-- Кнопки для клиента -->
+                    <Button Name="MyBookingsButton" Classes="NavButton" Content="Мои записи 📅" Click="MyBookingsButton_Click"/>
+                    <!-- НОВАЯ КНОПКА -->
+                    <Button Name="MembershipButton" Classes="NavButton" Content="Мой абонемент 💳" Click="MembershipButton_Click"/>
+                    <!-- НОВАЯ КНОПКА -->
+                    <Button Name="ChallengesButton" Classes="NavButton" Content="Клубные челленджи 🏆" Click="ChallengesButton_Click"/>
+                    
+                    <!-- Кнопки для персонала -->
+                    <Button Name="ClientsButton" Classes="NavButton" Content="Клиенты 👥" Click="ClientsButton_Click"/>
                     <Button Name="EquipmentButton" Classes="NavButton" Content="Оборудование ⚙️" Click="EquipmentButton_Click"/>
                     <Button Name="PaymentsButton" Classes="NavButton" Content="Финансы 💰" Click="PaymentsButton_Click"/>
-                    <Button Name="ReviewsButton" Classes="NavButton" Content="Отзывы ⭐" Click="ReviewsButton_Click"/>
                     <Button Name="RequestsButton" Classes="NavButton" Content="Запросы 📬" Click="RequestsButton_Click"/>
                     <Button Name="AnalyticsButton" Classes="NavButton" Content="Аналитика 📊" Click="AnalyticsButton_Click"/>
+                    <!-- НОВАЯ КНОПКА -->
+                    <Button Name="ManageChallengesButton" Classes="NavButton" Content="Упр. челленджами 🛠️" Click="ManageChallengesButton_Click"/>
                 </StackPanel>
             </DockPanel>
         </Border>

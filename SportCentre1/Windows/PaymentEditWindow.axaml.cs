@@ -44,10 +44,7 @@ namespace SportCentre1.Windows
 
             AmountUpDown.Value = (decimal?)(double)_currentPayment.Amount;
             DescriptionTextBox.Text = _currentPayment.Description;
-            if (_currentPayment.Paymentdate.ToDateTime(TimeOnly.MinValue) != default)
-            {
-                PaymentDatePicker.SelectedDate = _currentPayment.Paymentdate.ToDateTime(TimeOnly.MinValue);
-            }
+
         }
 
         private async void SaveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

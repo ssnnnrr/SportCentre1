@@ -23,7 +23,7 @@ namespace SportCentre1.Windows
             using (var dbContext = new AppDbContext())
             {
                 var originalSchedule = await dbContext.Schedules
-                    .Include(s => s.Workouttype) 
+                    .Include(s => s.Workouttype)
                     .FirstOrDefaultAsync(s => s.Scheduleid == _originalBooking.Scheduleid);
 
                 if (originalSchedule == null)
@@ -62,6 +62,26 @@ namespace SportCentre1.Windows
             {
                 try
                 {
+                    // ======================================================================
+                    // НОВЫЙ БЛОК: ПРОВЕРКА НА КОНФЛИКТ ЗАПИСЕЙ У КЛИЕНТА
+                    // ======================================================================
+                    bool clientHasConflict = await dbContext.Bookings
+                        .Include(b => b.Schedule)
+                        .AnyAsync(b =>
+                            b.Clientid == _originalBooking.Clientid && // У этого же клиента
+                            b.Bookingid != _originalBooking.Bookingid && // Исключаем текущую запись
+                            b.Schedule.Starttime < newSchedule.Endtime && // Проверка пересечения
+                            b.Schedule.Endtime > newSchedule.Starttime);
+
+                    if (clientHasConflict)
+                    {
+                        await new ConfirmationDialog("Ошибка! У вас уже есть другая запись, пересекающаяся с выбранным временем.", true)
+                            .ShowDialog<bool>(this);
+                        await transaction.RollbackAsync();
+                        return; // Прерываем операцию
+                    }
+                    // ======================================================================
+
                     var oldSchedule = await dbContext.Schedules.FindAsync(_originalBooking.Scheduleid);
                     if (oldSchedule != null && oldSchedule.Currentenrollment > 0)
                     {

@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:data="clr-namespace:SportCentre1.Data"
+             x:Class="SportCentre1.Pages.AdminChallengesPage">
+    <DockPanel Margin="25">
+        <TextBlock Classes="h1" DockPanel.Dock="Top">🛠️ Управление челленджами</TextBlock>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" 
+                    HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Name="AddButton" Content="Создать новый челлендж" Click="AddButton_Click"/>
+            <Button Name="EditButton" Content="Редактировать" IsEnabled="False" Click="EditButton_Click"/>
+            <Button Name="DeleteButton" Classes="danger" Content="Удалить" IsEnabled="False" Click="DeleteButton_Click"/>
+        </StackPanel>
+        
+        <DataGrid Name="ChallengesDataGrid" IsReadOnly="True" AutoGenerateColumns="False" 
+                  x:DataType="data:Challenge" SelectionChanged="ChallengesDataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" Binding="{Binding Title}" Width="2*"/>
+                <DataGridTextColumn Header="Тип" Binding="{Binding Challengetype}" Width="*"/>
+                <DataGridTextColumn Header="Начало" Binding="{Binding Startdate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                <DataGridTextColumn Header="Окончание" Binding="{Binding Enddate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                <DataGridTextColumn Header="Награда" Binding="{Binding Reward}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

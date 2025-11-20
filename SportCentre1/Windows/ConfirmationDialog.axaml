@@ -8,8 +8,8 @@
         <Grid RowDefinitions="*,Auto" Margin="10">
             <TextBlock Name="MessageTextBlock" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Margin="0,0,0,20"/>
             <StackPanel Name="ButtonPanel" Grid.Row="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-                <Button Name="YesButton" Content="Да" Click="YesButton_Click"/>
-                <Button Name="NoButton" Content="Нет" Classes="secondary" Click="NoButton_Click"/>
+                <Button Name="YesButton" Content="Да" Click="YesButton_Click" IsDefault="True"/>
+                <Button Name="NoButton" Content="Нет" Classes="secondary" Click="NoButton_Click" IsCancel="True"/>
             </StackPanel>
         </Grid>
     </Border>

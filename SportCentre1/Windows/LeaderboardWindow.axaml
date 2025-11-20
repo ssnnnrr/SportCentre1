@@ -1,0 +1,25 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:data="clr-namespace:SportCentre1.Data"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+        x:Class="SportCentre1.Windows.LeaderboardWindow"
+        Title="Таблица лидеров"
+        Width="500" Height="500"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="20">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,15">
+            <TextBlock Name="ChallengeTitleTextBlock" Classes="h1">Загрузка...</TextBlock>
+            <TextBlock Name="ParticipantsCountTextBlock" Classes="Subtle">Количество участников: -</TextBlock>
+        </StackPanel>
+
+        <DataGrid Name="LeaderboardDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Место" Binding="{Binding Rank}" Width="Auto"/>
+                <DataGridTextColumn Header="Участник" Binding="{Binding ClientName}" Width="*"/>
+                <DataGridTextColumn Header="Прогресс" Binding="{Binding Progress}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

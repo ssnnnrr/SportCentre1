@@ -105,13 +105,13 @@ namespace SportCentre1.Pages
 
                     if (originalPayment.Membershiptypeid != null)
                     {
-                        var membershipToExpire = await dbContext.ClientMemberships
+                        var membershipToExpire = await dbContext.Clientmemberships
                             .Where(cm => cm.Clientid == originalPayment.Clientid && cm.Membershiptypeid == originalPayment.Membershiptypeid)
-                            .OrderByDescending(cm => cm.EndDate)
+                            .OrderByDescending(cm => cm.Enddate)
                             .FirstOrDefaultAsync();
                         if (membershipToExpire != null)
                         {
-                            membershipToExpire.EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
+                            membershipToExpire.Enddate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
                         }
                     }
 

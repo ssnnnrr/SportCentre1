@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Microsoft.EntityFrameworkCore;
 using SportCentre1.Data;
 using SportCentre1.Models;
@@ -37,7 +38,7 @@ namespace SportCentre1.Pages
                     DeleteButton.IsVisible = false;
 
                     _buyMembershipButton = new Button { Content = "Купить абонемент" };
-                    _buyMembershipButton.Classes.Add("accent"); 
+                    _buyMembershipButton.Classes.Add("accent");
                     _buyMembershipButton.Click += BuyMembershipButton_Click;
                     BottomPanel.Children.Add(_buyMembershipButton);
 
@@ -57,7 +58,7 @@ namespace SportCentre1.Pages
         private async void BuyMembershipButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var purchaseWindow = new MembershipPurchaseWindow();
-            await purchaseWindow.ShowDialog<bool>(this.VisualRoot as Window);
+            await purchaseWindow.ShowDialog<bool>(this.GetVisualRoot() as Window);
         }
 
         private async Task<IEnumerable> LoadScheduleDataAsync(string? userRole)
@@ -79,7 +80,7 @@ namespace SportCentre1.Pages
                 var scheduleData = await baseQuery
                     .Include(s => s.Trainer)
                     .Include(s => s.Workouttype)
-                    .Where(s => s.Starttime >= DateTime.Now) 
+                    .Where(s => s.Starttime >= DateTime.Now)
                     .OrderBy(s => s.Starttime)
                     .ToListAsync();
 
@@ -118,7 +119,7 @@ namespace SportCentre1.Pages
                 if (alreadyBooked)
                 {
                     var dialog = new ConfirmationDialog("Вы уже записаны на это занятие.", true);
-                    await dialog.ShowDialog<bool>(this.VisualRoot as Window);
+                    await dialog.ShowDialog<bool>(this.GetVisualRoot() as Window);
                     return;
                 }
 
@@ -126,13 +127,13 @@ namespace SportCentre1.Pages
                 if (scheduleItem == null || scheduleItem.Currentenrollment >= scheduleItem.Maxcapacity)
                 {
                     var dialog = new ConfirmationDialog("К сожалению, все места в группе заняты.", true);
-                    await dialog.ShowDialog<bool>(this.VisualRoot as Window);
+                    await dialog.ShowDialog<bool>(this.GetVisualRoot() as Window);
                     return;
                 }
 
                 var today = DateOnly.FromDateTime(DateTime.Now);
-                bool hasActiveMembership = await dbContext.ClientMemberships
-                    .AnyAsync(cm => cm.Clientid == clientProfile.Clientid && cm.StartDate <= today && cm.EndDate >= today);
+                bool hasActiveMembership = await dbContext.Clientmemberships
+                    .AnyAsync(cm => cm.Clientid == clientProfile.Clientid && cm.Startdate <= today && cm.Enddate >= today);
 
                 var newBooking = new Booking
                 {
@@ -154,7 +155,7 @@ namespace SportCentre1.Pages
                 {
                     successDialog = new ConfirmationDialog("Вы успешно записаны! Не забудьте оплатить занятие в разделе 'Мои записи'.", true);
                 }
-                await successDialog.ShowDialog<bool>(this.VisualRoot as Window);
+                await successDialog.ShowDialog<bool>(this.GetVisualRoot() as Window);
 
                 ScheduleListBox.ItemsSource = await LoadScheduleDataAsync(MainWindow.CurrentUser?.Role?.Rolename);
             }
@@ -163,7 +164,7 @@ namespace SportCentre1.Pages
         private async void AddButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var editWindow = new ScheduleEditWindow();
-            var result = await editWindow.ShowDialog<bool>(this.VisualRoot as Window);
+            var result = await editWindow.ShowDialog<bool>(this.GetVisualRoot() as Window);
             if (result == true)
             {
                 ScheduleListBox.ItemsSource = await LoadScheduleDataAsync(MainWindow.CurrentUser?.Role?.Rolename);
@@ -180,7 +181,7 @@ namespace SportCentre1.Pages
                     if (scheduleToEdit == null) return;
 
                     var editWindow = new ScheduleEditWindow(scheduleToEdit);
-                    var result = await editWindow.ShowDialog<bool>(this.VisualRoot as Window);
+                    var result = await editWindow.ShowDialog<bool>(this.GetVisualRoot() as Window);
                     if (result == true)
                     {
                         ScheduleListBox.ItemsSource = await LoadScheduleDataAsync(MainWindow.CurrentUser?.Role?.Rolename);
@@ -194,7 +195,7 @@ namespace SportCentre1.Pages
             if (ScheduleListBox.SelectedItem is ScheduleInfo selectedInfo)
             {
                 var dialog = new ConfirmationDialog("Вы уверены, что хотите удалить эту запись из расписания?");
-                var result = await dialog.ShowDialog<bool>(this.VisualRoot as Window);
+                var result = await dialog.ShowDialog<bool>(this.GetVisualRoot() as Window);
                 if (result != true) return;
 
                 using (var dbContext = new AppDbContext())

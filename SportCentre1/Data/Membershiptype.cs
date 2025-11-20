@@ -14,4 +14,8 @@ public partial class Membershiptype
     public decimal Price { get; set; }
 
     public int Durationdays { get; set; }
+
+    public virtual ICollection<Clientmembership> Clientmemberships { get; set; } = new List<Clientmembership>();
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

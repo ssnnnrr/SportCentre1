@@ -17,10 +17,19 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
+    public virtual DbSet<Challenge> Challenges { get; set; }
+
     public virtual DbSet<Client> Clients { get; set; }
 
-    // Новая таблица для абонементов клиентов
-    public virtual DbSet<ClientMembership> ClientMemberships { get; set; }
+    public virtual DbSet<ClientChallenge> ClientChallenges { get; set; }
+
+    public virtual DbSet<ClientMembershipPause> ClientMembershipPauses { get; set; }
+
+
+    public virtual DbSet<Clientmembership> Clientmemberships { get; set; }
+
+
+    public virtual DbSet<Clientprogress> Clientprogresses { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
 
@@ -78,6 +87,31 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("bookings_scheduleid_fkey");
         });
 
+        modelBuilder.Entity<Challenge>(entity =>
+        {
+            entity.HasKey(e => e.Challengeid).HasName("challenges_pkey");
+
+            entity.ToTable("challenges", tb => tb.HasComment("Общеклубные челленджи и события"));
+
+            entity.Property(e => e.Challengeid).HasColumnName("challengeid");
+            entity.Property(e => e.Challengetype)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("'Attendance'::character varying")
+                .HasComment("Тип челленджа (например, Attendance, Manual)")
+                .HasColumnName("challengetype");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Enddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("enddate");
+            entity.Property(e => e.Reward).HasColumnName("reward");
+            entity.Property(e => e.Startdate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("startdate");
+            entity.Property(e => e.Title)
+                .HasMaxLength(255)
+                .HasColumnName("title");
+        });
+
         modelBuilder.Entity<Client>(entity =>
         {
             entity.HasKey(e => e.Clientid).HasName("clients_pkey");
@@ -95,6 +129,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Firstname)
                 .HasMaxLength(50)
                 .HasColumnName("firstname");
+            entity.Property(e => e.Height)
+                .HasComment("Рост клиента в сантиметрах")
+                .HasColumnName("height");
             entity.Property(e => e.Lastname)
                 .HasMaxLength(50)
                 .HasColumnName("lastname");
@@ -102,6 +139,14 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("phonenumber");
             entity.Property(e => e.Registrationdate).HasColumnName("registrationdate");
+            entity.Property(e => e.Targetbodyfatpercentage)
+                .HasPrecision(4, 2)
+                .HasComment("Целевой процент жира клиента")
+                .HasColumnName("targetbodyfatpercentage");
+            entity.Property(e => e.Targetweight)
+                .HasPrecision(5, 2)
+                .HasComment("Целевой вес клиента в кг")
+                .HasColumnName("targetweight");
             entity.Property(e => e.Userid).HasColumnName("userid");
 
             entity.HasOne(d => d.User).WithOne(p => p.Client)
@@ -109,24 +154,100 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("clients_userid_fkey");
         });
 
-        // Новая сущность для абонементов клиентов
-        modelBuilder.Entity<ClientMembership>(entity =>
+        modelBuilder.Entity<ClientChallenge>(entity =>
         {
-            entity.HasKey(e => e.ClientMembershipId).HasName("clientmemberships_pkey");
-            entity.ToTable("clientmemberships");
-            entity.Property(e => e.ClientMembershipId).HasColumnName("clientmembershipid").UseIdentityByDefaultColumn();
+            entity.HasKey(e => e.Clientchallengeid).HasName("client_challenges_pkey");
+
+            entity.ToTable("client_challenges", tb => tb.HasComment("Связь клиентов с челленджами, их прогресс и статус"));
+
+            entity.HasIndex(e => new { e.Clientid, e.Challengeid }, "idx_unique_client_challenge").IsUnique();
+
+            entity.Property(e => e.Clientchallengeid).HasColumnName("clientchallengeid");
+            entity.Property(e => e.Challengeid).HasColumnName("challengeid");
             entity.Property(e => e.Clientid).HasColumnName("clientid");
-            entity.Property(e => e.Membershiptypeid).HasColumnName("membershiptypeid");
-            entity.Property(e => e.StartDate).HasColumnName("startdate");
-            entity.Property(e => e.EndDate).HasColumnName("enddate");
+            entity.Property(e => e.Joindate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("joindate");
+            entity.Property(e => e.Progress)
+                .HasDefaultValue(0)
+                .HasColumnName("progress");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("'InProgress'::character varying")
+                .HasColumnName("status");
 
-            entity.HasOne(d => d.Client).WithMany(p => p.ClientMemberships)
+            entity.HasOne(d => d.Challenge).WithMany(p => p.ClientChallenges)
+                .HasForeignKey(d => d.Challengeid)
+                .HasConstraintName("client_challenges_challengeid_fkey");
+
+            entity.HasOne(d => d.Client).WithMany(p => p.ClientChallenges)
                 .HasForeignKey(d => d.Clientid)
-                .HasConstraintName("clientmemberships_clientid_fkey");
+                .HasConstraintName("client_challenges_clientid_fkey");
+        });
 
-            entity.HasOne(d => d.Membershiptype).WithMany()
+        modelBuilder.Entity<ClientMembershipPause>(entity =>
+        {
+            entity.HasKey(e => e.Pauseid).HasName("client_membership_pauses_pkey");
+
+            entity.ToTable("client_membership_pauses", tb => tb.HasComment("История заморозки абонементов клиентов"));
+
+            entity.Property(e => e.Pauseid).HasColumnName("pauseid");
+            entity.Property(e => e.Clientmembershipid).HasColumnName("clientmembershipid");
+            entity.Property(e => e.Enddate).HasColumnName("enddate");
+            entity.Property(e => e.Startdate).HasColumnName("startdate");
+
+            entity.HasOne(d => d.Clientmembership).WithMany(p => p.ClientMembershipPauses)
+                .HasForeignKey(d => d.Clientmembershipid)
+                .HasConstraintName("client_membership_pauses_clientmembershipid_fkey");
+        });
+
+
+        modelBuilder.Entity<Clientmembership>(entity =>
+        {
+            entity.HasKey(e => e.Clientmembershipid).HasName("clientmemberships_pkey");
+
+            entity.ToTable("clientmemberships");
+
+            entity.Property(e => e.Clientmembershipid).HasColumnName("clientmembershipid");
+            entity.Property(e => e.Clientid).HasColumnName("clientid");
+            entity.Property(e => e.Enddate).HasColumnName("enddate");
+            entity.Property(e => e.Membershiptypeid).HasColumnName("membershiptypeid");
+            entity.Property(e => e.Startdate).HasColumnName("startdate");
+
+            entity.HasOne(d => d.Client).WithMany(p => p.Clientmemberships)
+                .HasForeignKey(d => d.Clientid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_clientmemberships_clientid");
+
+            entity.HasOne(d => d.Membershiptype).WithMany(p => p.Clientmemberships)
                 .HasForeignKey(d => d.Membershiptypeid)
-                .HasConstraintName("clientmemberships_membershiptypeid_fkey");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_clientmemberships_membershiptypeid");
+        });
+
+        
+
+        modelBuilder.Entity<Clientprogress>(entity =>
+        {
+            entity.HasKey(e => e.Clientprogressid).HasName("clientprogress_pkey");
+
+            entity.ToTable("clientprogress", tb => tb.HasComment("История измерений прогресса клиента (вес, % жира и т.д.)"));
+
+            entity.Property(e => e.Clientprogressid).HasColumnName("clientprogressid");
+            entity.Property(e => e.Bodyfatpercentage)
+                .HasPrecision(4, 2)
+                .HasColumnName("bodyfatpercentage");
+            entity.Property(e => e.Clientid).HasColumnName("clientid");
+            entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.Weight)
+                .HasPrecision(5, 2)
+                .HasColumnName("weight");
+
+            entity.HasOne(d => d.Client).WithMany(p => p.Clientprogresses)
+                .HasForeignKey(d => d.Clientid)
+                .HasConstraintName("clientprogress_clientid_fkey");
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -228,27 +349,22 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Bookingid).HasColumnName("bookingid");
             entity.Property(e => e.Clientid).HasColumnName("clientid");
             entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Paymentdate).HasColumnName("paymentdate");
-
-            // Добавляем необязательную связь с типом абонемента
             entity.Property(e => e.Membershiptypeid).HasColumnName("membershiptypeid");
-
+            entity.Property(e => e.Paymentdate).HasColumnName("paymentdate");
 
             entity.HasOne(d => d.Booking).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.Bookingid)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("payments_bookingid_fkey");
+                .HasConstraintName("fk_payments_bookingid");
 
             entity.HasOne(d => d.Client).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.Clientid)
-                .HasConstraintName("payments_clientid_fkey");
+                .HasConstraintName("fk_payments_clientid");
 
-            // Новая связь для платежей за абонементы
-            entity.HasOne<Membershiptype>()
-                  .WithMany()
-                  .HasForeignKey(d => d.Membershiptypeid)
-                  .OnDelete(DeleteBehavior.SetNull)
-                  .HasConstraintName("payments_membershiptypeid_fkey");
+            entity.HasOne(d => d.Membershiptype).WithMany(p => p.Payments)
+                .HasForeignKey(d => d.Membershiptypeid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_payments_membershiptypeid");
         });
 
         modelBuilder.Entity<Request>(entity =>
